@@ -36,8 +36,15 @@ def extract_from_documents(files):
         
 
 #function to convert text to speech
-def azure_text_to_speech(text):
+def azure_text_to_speech(text, output_file="output.mp4", verbose = False):
     """Convert text to speech using Azure Cognitive Services."""
+    # path = "speech_outputs"
+    # os.makedirs(path, exist_ok=True)
+    # output_file = os.path.join(path, output_file)
+
+    output = open(output_file, 'w+')
+    output.close()
+    
     try: 
         SPEECH_REGION = os.getenv("REGION")
         SPEECH_KEY = os.getenv("API_KEY")
@@ -50,16 +57,49 @@ def azure_text_to_speech(text):
         synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
 
         # Synthesize the speech
-        st.info("Reading the content aloud...")
+        #st.info("Reading the content aloud...")
         result = synthesizer.speak_text_async(text).get()
 
-        # Check for errors
+        # Handle the result
         if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
-            st.success("Speech synthesis completed successfully!")
-        else:
-            st.error(f"Speech synthesis failed. Reason: {result.reason}")
+            if verbose:
+                print(f"Speech synthesized successfully for text: {text}")
+            return True, "Speech synthesis completed successfully."
+        
+        elif result.reason == speechsdk.ResultReason.Canceled:
+            cancellation_details = result.cancellation_details
+            error_message = f"Speech synthesis canceled: {cancellation_details.reason}"
+            if verbose:
+                print(error_message)
+            
+            if cancellation_details.reason == speechsdk.CancellationReason.Error and cancellation_details.error_details:
+                error_message += f" Error details: {cancellation_details.error_details}."
+                if verbose:
+                    print("Did you set the speech resource key and region values?")
+            
+            return False, error_message
+    
     except Exception as e:
-        st.error(f"Error converting to audio: {e}")
-        return None
+        error_message = f"An error occurred during speech synthesis: {str(e)}"
+        if verbose:
+            print(error_message)
+        return False
 
 
+def main():
+    # Example usage
+    try:
+        # Transcribe audio
+        #transcription = transcribe_audio("audio.wav")
+        #print(f"Transcription: {transcription}")
+        
+        # Synthesize speech with verbose output
+        sample_text = "I love the AI Hacktoberfest challenge by MLSA Nigeria!"
+        success, message = azure_text_to_speech(sample_text, verbose=True)
+        print(message)
+        
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+if __name__ == "__main__":
+    main()
