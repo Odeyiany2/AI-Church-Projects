@@ -63,8 +63,8 @@ def azure_text_to_speech(text, output_file="output.wav", verbose = False):
         # Handle the result
         if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
             if verbose:
-                print(f"Speech synthesized successfully for text: {text}")
-            return True, "Speech synthesis completed successfully."
+                print(f"Speech synthesized successfully. Saved to {output_file}")
+            return output_file 
         
         elif result.reason == speechsdk.ResultReason.Canceled:
             cancellation_details = result.cancellation_details
@@ -77,13 +77,13 @@ def azure_text_to_speech(text, output_file="output.wav", verbose = False):
                 if verbose:
                     print("Did you set the speech resource key and region values?")
             
-            return False, error_message
+            return None
     
     except Exception as e:
         error_message = f"An error occurred during speech synthesis: {str(e)}"
         if verbose:
             print(error_message)
-        return False
+        return None
 
 
 def main():
