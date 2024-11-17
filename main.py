@@ -36,11 +36,11 @@ def extract_from_documents(files):
         
 
 #function to convert text to speech
-def azure_text_to_speech(text, output_file="output.mp4", verbose = False):
+def azure_text_to_speech(text, output_file="output.wav", verbose = False):
     """Convert text to speech using Azure Cognitive Services."""
-    # path = "speech_outputs"
-    # os.makedirs(path, exist_ok=True)
-    # output_file = os.path.join(path, output_file)
+    path = "speech_outputs"
+    os.makedirs(path, exist_ok=True)
+    output_file = os.path.join(path, output_file)
 
     output = open(output_file, 'w+')
     output.close()
@@ -53,7 +53,7 @@ def azure_text_to_speech(text, output_file="output.mp4", verbose = False):
         speech_config.speech_synthesis_voice_name = "en-NG-EzinneNeural"  
 
         # Stream audio output directly to the user
-        audio_config = speechsdk.audio.AudioOutputConfig(use_default_speaker=True)
+        audio_config = speechsdk.audio.AudioOutputConfig(filename=output_file)
         synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
 
         # Synthesize the speech
