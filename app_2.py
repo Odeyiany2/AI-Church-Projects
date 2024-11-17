@@ -64,4 +64,4 @@ st.subheader("Speech Output Responses")
 if 'audio_file' in st.session_state:
     audio_path = st.session_state.audio_file
     st.audio(audio_path, format="audio/wav")
-    st.markdown(generate_download_link(audio_path), unsafe_allow_html=True, start_time=0)
+    st.markdown(generate_download_link(audio_path), unsafe_allow_html=True)
