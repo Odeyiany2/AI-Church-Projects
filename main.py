@@ -50,7 +50,7 @@ def azure_text_to_speech(text, output_file="output.wav", verbose = False):
         SPEECH_KEY = os.getenv("API_KEY")
         # Configure Azure Speech SDK
         speech_config = speechsdk.SpeechConfig(subscription=SPEECH_KEY, region=SPEECH_REGION)
-        speech_config.speech_synthesis_voice_name = "en-NG-EzinneNeural"  
+        speech_config.speech_synthesis_voice_name = "en-NG-AbeoNeural"  
 
         # Stream audio output directly to the user
         audio_config = speechsdk.audio.AudioOutputConfig(filename=output_file)
