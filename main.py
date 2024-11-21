@@ -50,7 +50,18 @@ def azure_text_to_speech(text, output_file="output.wav", verbose = False):
         SPEECH_KEY = os.getenv("API_KEY")
         # Configure Azure Speech SDK
         speech_config = speechsdk.SpeechConfig(subscription=SPEECH_KEY, region=SPEECH_REGION)
-        speech_config.speech_synthesis_voice_name = "en-US-JennyNeural"  
+        speech_config.speech_synthesis_voice_name = "en-NG-AbeoNeural" 
+
+        # Create SSML string for smoother speech
+        ssml_string = f"""
+        <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-NG">
+            <voice name="en-NG-EzinneNeural">
+                <prosody rate="0.01%" pitch="0.01%">
+                    {text}
+                </prosody>
+            </voice>
+        </speak>
+        """ 
 
         # Stream audio output directly to the user
         audio_config = speechsdk.audio.AudioOutputConfig(filename=output_file)
@@ -58,7 +69,7 @@ def azure_text_to_speech(text, output_file="output.wav", verbose = False):
 
         # Synthesize the speech
         #st.info("Reading the content aloud...")
-        result = synthesizer.speak_text_async(text).get()
+        result = synthesizer.speak_ssml_async(ssml_string).get()
 
         # Handle the result
         if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
