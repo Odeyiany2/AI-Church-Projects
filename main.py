@@ -113,7 +113,7 @@ def azure_text_to_speech(text, selected_voice, output_file="output.wav", verbose
 def generate_ssml(text_segments):
     """Generate SSML string with alternating voices."""
     ssml_parts = []
-    voices = ["en-NG-EzinneNeural", "en-NG-AdeNeural"]  # Female and Male voices
+    voices = ["en-NG-EzinneNeural", "en-NG-AbeoNeural"]  # Female and Male voices
     for i, segment in enumerate(text_segments):
         voice = voices[i % len(voices)]  # Alternate between voices
         ssml_parts.append(f'<voice name="{voice}">{segment.strip()}.</voice>')

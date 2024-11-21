@@ -4,10 +4,6 @@ import os
 import base64
 from main import azure_text_to_speech, extract_from_documents
 
-# Directory to store synthesized audio
-# SPEECH_OUTPUT_DIR = "speech_outputs"
-# os.makedirs(SPEECH_OUTPUT_DIR, exist_ok=True)
-
 # Function to generate a download link for the audio file
 def generate_download_link(file_path):
     """Generate a download link for the audio file."""
@@ -23,13 +19,13 @@ st.title("📢 Victory House Announcement Assistant")
 st.sidebar.subheader("Voice Settings")
 voice_choice = st.sidebar.selectbox(
     "Choose Voice Type",
-    ["en-NG-EzinneNeural (Female)", "en-NG-AdeNeural (Male)", "Both"]
+    ["en-NG-EzinneNeural (Female)", "en-NG-AbeoNeural(Male)", "Both"]
 )
 
 # Map user-friendly labels to Azure voice names
 voice_mapping = {
     "en-NG-EzinneNeural (Female)": "en-NG-EzinneNeural",
-    "en-NG-AdeNeural (Male)": "en-NG-AdeNeural",
+    "en-NG-AdeNeural (Male)": "en-NG-AbeoNeural",
     "Both": "Both"
 }
 selected_voice = voice_mapping[voice_choice]
