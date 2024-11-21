@@ -68,7 +68,6 @@ def azure_text_to_speech(text, selected_voice, output_file="output.wav", verbose
                     <prosody rate="0.001%" pitch="0.001%">
                         {text}
                     </prosody>
-                </voice>
             </speak>
             """ 
             speech_config.speech_synthesis_voice_name = selected_voice
