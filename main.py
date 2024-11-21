@@ -42,10 +42,17 @@ def azure_text_to_speech(text, selected_voice, output_file="output.wav", verbose
     os.makedirs(path, exist_ok=True)
     output_file = os.path.join(path, output_file)
 
-    # output = open(output_file, 'w+')
-    # output.close()
+    output = open(output_file, 'w+')
+    output.close()
     
     try: 
+        path = "speech_outputs"
+        os.makedirs(path, exist_ok=True)
+        output_file = os.path.join(path, output_file)
+
+        output = open(output_file, 'w+')
+        output.close()
+
         SPEECH_REGION = os.getenv("REGION")
         SPEECH_KEY = os.getenv("API_KEY")
         # Configure Azure Speech SDK
@@ -65,11 +72,13 @@ def azure_text_to_speech(text, selected_voice, output_file="output.wav", verbose
                     # Create SSML string for smoother speech
             ssml_string = f"""
             <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-NG">
-                    <prosody rate="0.001%" pitch="0.001%">
+                <voice name="{selected_voice}">
+                    <prosody rate="0%" pitch="0%">
                         {text}
                     </prosody>
+                </voice>
             </speak>
-            """ 
+            """
             speech_config.speech_synthesis_voice_name = selected_voice
             audio_config = speechsdk.audio.AudioOutputConfig(filename=output_file)
             synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
@@ -79,6 +88,7 @@ def azure_text_to_speech(text, selected_voice, output_file="output.wav", verbose
         if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
             if verbose:
                 print(f"Speech synthesized successfully. Saved to {output_file}")
+                st.audio(output_file, format="audio/wav")
             return output_file 
         
         elif result.reason == speechsdk.ResultReason.Canceled:
