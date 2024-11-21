@@ -36,7 +36,7 @@ def extract_from_documents(files):
         
 
 #function to convert text to speech
-def azure_text_to_speech(text, output_file="output.wav", verbose = False):
+def azure_text_to_speech(text, selected_voice, output_file="output.wav", verbose = False):
     """Convert text to speech using Azure Cognitive Services."""
     path = "speech_outputs"
     os.makedirs(path, exist_ok=True)
@@ -50,26 +50,52 @@ def azure_text_to_speech(text, output_file="output.wav", verbose = False):
         SPEECH_KEY = os.getenv("API_KEY")
         # Configure Azure Speech SDK
         speech_config = speechsdk.SpeechConfig(subscription=SPEECH_KEY, region=SPEECH_REGION)
-        speech_config.speech_synthesis_voice_name = "en-NG-AbeoNeural" 
 
-        # Create SSML string for smoother speech
-        ssml_string = f"""
-        <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-NG">
-            <voice name="en-NG-EzinneNeural">
-                <prosody rate="0.01%" pitch="0.01%">
-                    {text}
-                </prosody>
-            </voice>
-        </speak>
-        """ 
+        #configuring for the voice selected by users
+        if selected_voice == "Both":
+            # Use SSML for alternating voices
+            text_segments = text.split(".")  # Split text by sentences
+            ssml_string = generate_ssml(text_segments)
+            audio_config = speechsdk.audio.AudioOutputConfig(filename=output_file)
+            synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
+            result = synthesizer.speak_ssml_async(ssml_string).get()
+        
+        else:
+            # Single voice (male or female)
+                    # Create SSML string for smoother speech
+            ssml_string = f"""
+            <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-NG">
+                    <prosody rate="0.001%" pitch="0.001%">
+                        {text}
+                    </prosody>
+                </voice>
+            </speak>
+            """ 
+            speech_config.speech_synthesis_voice_name = selected_voice
+            audio_config = speechsdk.audio.AudioOutputConfig(filename=output_file)
+            synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
+            result = synthesizer.speak_ssml_async(ssml_string).get()
+        
+        # #speech_config.speech_synthesis_voice_name = "en-NG-AbeoNeural" 
 
-        # Stream audio output directly to the user
-        audio_config = speechsdk.audio.AudioOutputConfig(filename=output_file)
-        synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
+        # # Create SSML string for smoother speech
+        # ssml_string = f"""
+        # <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-NG">
+        #     <voice name="en-NG-EzinneNeural">
+        #         <prosody rate="0.001%" pitch="0.001%">
+        #             {text}
+        #         </prosody>
+        #     </voice>
+        # </speak>
+        # """ 
 
-        # Synthesize the speech
-        #st.info("Reading the content aloud...")
-        result = synthesizer.speak_ssml_async(ssml_string).get()
+        # # Stream audio output directly to the user
+        # audio_config = speechsdk.audio.AudioOutputConfig(filename=output_file)
+        # synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
+
+        # # Synthesize the speech
+        # #st.info("Reading the content aloud...")
+        # result = synthesizer.speak_ssml_async(ssml_string).get()
 
         # Handle the result
         if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
@@ -95,6 +121,15 @@ def azure_text_to_speech(text, output_file="output.wav", verbose = False):
         if verbose:
             print(error_message)
         return None
+
+def generate_ssml(text_segments):
+    """Generate SSML string with alternating voices."""
+    ssml_parts = []
+    voices = ["en-NG-EzinneNeural", "en-NG-AdeNeural"]  # Female and Male voices
+    for i, segment in enumerate(text_segments):
+        voice = voices[i % len(voices)]  # Alternate between voices
+        ssml_parts.append(f'<voice name="{voice}">{segment.strip()}.</voice>')
+    return f'<speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-NG">{" ".join(ssml_parts)}</speak>'
 
 
 def main():
