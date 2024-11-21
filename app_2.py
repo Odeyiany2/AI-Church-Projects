@@ -19,13 +19,13 @@ st.title("📢 Victory House Announcement Assistant")
 st.sidebar.subheader("Voice Settings")
 voice_choice = st.sidebar.selectbox(
     "Choose Voice Type",
-    ["en-NG-EzinneNeural (Female)", "(Male)"]
+    ["Female Voice Control", "Male Voice Control"] #en-NG-EzinneNeural #en-NG-AbeoNeural
 )
 
 # Map user-friendly labels to Azure voice names
 voice_mapping = {
-    "en-NG-EzinneNeural (Female)": "en-NG-EzinneNeural",
-    "en-NG-AbeoNeural (Male)": "en-NG-AbeoNeural"
+    "Female Voice Control": "en-US-AvaMultilingualNeural",  #en-US-AvaMultilingualNeural
+    "Male Voice Control": "en-US-AndrewMultilingualNeural"  #en-US-AndrewMultilingualNeural
 }
 selected_voice = voice_mapping[voice_choice]
 

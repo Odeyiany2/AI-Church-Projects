@@ -46,13 +46,6 @@ def azure_text_to_speech(text, selected_voice, output_file="output.wav", verbose
     output.close()
     
     try: 
-        path = "speech_outputs"
-        os.makedirs(path, exist_ok=True)
-        output_file = os.path.join(path, output_file)
-
-        output = open(output_file, 'w+')
-        output.close()
-
         SPEECH_REGION = os.getenv("REGION")
         SPEECH_KEY = os.getenv("API_KEY")
         # Configure Azure Speech SDK
@@ -113,7 +106,7 @@ def azure_text_to_speech(text, selected_voice, output_file="output.wav", verbose
 def generate_ssml(text_segments):
     """Generate SSML string with alternating voices."""
     ssml_parts = []
-    voices = ["en-NG-EzinneNeural", "en-NG-AbeoNeural"]  # Female and Male voices
+    voices = ["en-US-AvaMultilingualNeural", "en-US-AndrewMultilingualNeural"]  # Female and Male voices
     for i, segment in enumerate(text_segments):
         voice = voices[i % len(voices)]  # Alternate between voices
         ssml_parts.append(f'<voice name="{voice}">{segment.strip()}.</voice>')
