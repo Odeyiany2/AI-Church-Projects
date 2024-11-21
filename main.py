@@ -59,30 +59,30 @@ def azure_text_to_speech(text, selected_voice, output_file="output.wav", verbose
         speech_config = speechsdk.SpeechConfig(subscription=SPEECH_KEY, region=SPEECH_REGION)
 
         #configuring for the voice selected by users
-        if selected_voice == "Both":
-            # Use SSML for alternating voices
-            text_segments = text.split(".")  # Split text by sentences
-            ssml_string = generate_ssml(text_segments)
-            audio_config = speechsdk.audio.AudioOutputConfig(filename=output_file)
-            synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
-            result = synthesizer.speak_ssml_async(ssml_string).get()
+        # if selected_voice == "Both":
+        #     # Use SSML for alternating voices
+        #     text_segments = text.split(".")  # Split text by sentences
+        #     ssml_string = generate_ssml(text_segments)
+        #     audio_config = speechsdk.audio.AudioOutputConfig(filename=output_file)
+        #     synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
+        #     result = synthesizer.speak_ssml_async(ssml_string).get()
         
-        else:
+        # else:
             # Single voice (male or female)
                     # Create SSML string for smoother speech
-            ssml_string = f"""
-            <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-NG">
-                <voice name="{selected_voice}">
-                    <prosody rate="0%" pitch="0%">
-                        {text}
-                    </prosody>
-                </voice>
-            </speak>
-            """
-            speech_config.speech_synthesis_voice_name = selected_voice
-            audio_config = speechsdk.audio.AudioOutputConfig(filename=output_file)
-            synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
-            result = synthesizer.speak_ssml_async(ssml_string).get()
+        ssml_string = f"""
+        <speak version="1.0" xmlns="http://www.w3.org/2001/10/synthesis" xml:lang="en-NG">
+            <voice name="{selected_voice}">
+                <prosody rate="0%" pitch="0%">
+                    {text}
+                </prosody>
+            </voice>
+        </speak>
+        """
+        speech_config.speech_synthesis_voice_name = selected_voice
+        audio_config = speechsdk.audio.AudioOutputConfig(filename=output_file)
+        synthesizer = speechsdk.SpeechSynthesizer(speech_config=speech_config, audio_config=audio_config)
+        result = synthesizer.speak_ssml_async(ssml_string).get()
         
         # Handle the result
         if result.reason == speechsdk.ResultReason.SynthesizingAudioCompleted:
